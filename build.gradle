@@ -56,7 +56,7 @@ project(':library') {
                 }
                 pom {
                     name = 'io.github.droideco'
-                    description = 'sun.misc.Unsafe wrapper for Android'
+                    description = 'sun.misc.Unsafe implementation for Android'
                     url = 'https://github.com/droideco/unsafe'
                     licenses {
                         license {
