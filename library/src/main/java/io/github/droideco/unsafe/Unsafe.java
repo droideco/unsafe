@@ -334,7 +334,7 @@ public class Unsafe {
     }
 
     static {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) System.loadLibrary("unsafe");
+        System.loadLibrary("unsafe");
     }
     private static native Object nAllocateInstance(Class<?> clazz) throws InstantiationException;
     @CriticalNative

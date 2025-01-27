@@ -220,45 +220,54 @@ JNI_OnLoad(JavaVM *vm, __attribute__((unused)) void *reserved) {
     if ((*vm)->GetEnv(vm, (void **) &env, JNI_VERSION_1_6) != JNI_OK) return JNI_ERR;
     jclass clazz = (*env)->FindClass(env, "io/github/droideco/unsafe/Unsafe");
     if (clazz == NULL) return JNI_ERR;
-    JNINativeMethod methods[] = {
-            {"nAllocateInstance", "(Ljava/lang/Class;)Ljava/lang/Object;", &nAllocateInstance},
-            {"nAddressSize", "!()I", &nAddressSize},
-            {"nPageSize", "()I", &nPageSize},
-            {"nAllocateMemory", "(J)J", &nAllocateMemory},
-            {"nFreeMemory", "(J)V", &nFreeMemory},
-            {"nSetMemory", "(JJB)V", &nSetMemory},
-            {"nGetBoolean", "!(Ljava/lang/Object;J)Z", &nGetBoolean},
-            {"nPutBoolean", "!(Ljava/lang/Object;JZ)V", &nPutBoolean},
-            {"nGetByte", "!(Ljava/lang/Object;J)B", &nGetByte__Ljava_lang_Object_2J},
-            {"nGetByte", "!(J)B", &nGetByte__J},
-            {"nPutByte", "!(Ljava/lang/Object;JB)V", nPutByte__Ljava_lang_Object_2JB},
-            {"nPutByte", "!(JB)V", &nPutByte__JB},
-            {"nGetShort", "!(Ljava/lang/Object;J)S", &nGetShort__Ljava_lang_Object_2J},
-            {"nGetShort", "!(J)S", &nGetShort__J},
-            {"nPutShort", "!(Ljava/lang/Object;JS)V", &nPutShort__Ljava_lang_Object_2JS},
-            {"nPutShort", "!(JS)V", &nPutShort__JS},
-            {"nGetChar", "!(Ljava/lang/Object;J)C", &nGetChar__Ljava_lang_Object_2J},
-            {"nGetChar", "!(J)C", &nGetChar__J},
-            {"nPutChar", "!(Ljava/lang/Object;JC)V", &nPutChar__Ljava_lang_Object_2JC},
-            {"nPutChar", "!(JC)V", &nPutChar__JC},
-            {"nGetInt", "!(J)I", &nGetInt},
-            {"nPutInt", "!(JI)V", &nPutInt},
-            {"nGetLong", "!(J)J", &nGetLong},
-            {"nPutLong", "!(JJ)V", &nPutLong},
-            {"nGetFloat", "!(Ljava/lang/Object;J)F", &nGetFloat__Ljava_lang_Object_2J},
-            {"nGetFloat", "!(J)F", &nGetFloat__J},
-            {"nPutFloat", "!(Ljava/lang/Object;JF)V", &nPutFloat__Ljava_lang_Object_2JF},
-            {"nPutFloat", "!(JF)V", &nPutFloat__JF},
-            {"nGetDouble", "!(Ljava/lang/Object;J)D", &nGetDouble__Ljava_lang_Object_2J},
-            {"nGetDouble", "!(J)D", &nGetDouble__J},
-            {"nPutDouble", "!(Ljava/lang/Object;JD)V", &nPutDouble__Ljava_lang_Object_2JD},
-            {"nPutDouble", "!(JD)V", &nPutDouble__JD},
-            {"nCopyMemory", "(JJJ)V", &nCopyMemory},
-            {"nLoadFence", "!()V", &nLoadFence},
-            {"nStoreFence", "!()V", &nStoreFence},
-            {"nFullFence", "!()V", &nFullFence}
-    };
-    if ((*env)->RegisterNatives(env, clazz, methods, sizeof(methods) / sizeof(methods[0])) != JNI_OK) return JNI_ERR;
+    if (android_get_device_api_level() < __ANDROID_API_N__) {
+        JNINativeMethod methods[] = {
+                {"nAllocateInstance", "(Ljava/lang/Class;)Ljava/lang/Object;", &nAllocateInstance},
+                {"nAddressSize", "!()I", &nAddressSize},
+                {"nPageSize", "()I", &nPageSize},
+                {"nAllocateMemory", "(J)J", &nAllocateMemory},
+                {"nFreeMemory", "(J)V", &nFreeMemory},
+                {"nSetMemory", "(JJB)V", &nSetMemory},
+                {"nGetBoolean", "!(Ljava/lang/Object;J)Z", &nGetBoolean},
+                {"nPutBoolean", "!(Ljava/lang/Object;JZ)V", &nPutBoolean},
+                {"nGetByte", "!(Ljava/lang/Object;J)B", &nGetByte__Ljava_lang_Object_2J},
+                {"nGetByte", "!(J)B", &nGetByte__J},
+                {"nPutByte", "!(Ljava/lang/Object;JB)V", nPutByte__Ljava_lang_Object_2JB},
+                {"nPutByte", "!(JB)V", &nPutByte__JB},
+                {"nGetShort", "!(Ljava/lang/Object;J)S", &nGetShort__Ljava_lang_Object_2J},
+                {"nGetShort", "!(J)S", &nGetShort__J},
+                {"nPutShort", "!(Ljava/lang/Object;JS)V", &nPutShort__Ljava_lang_Object_2JS},
+                {"nPutShort", "!(JS)V", &nPutShort__JS},
+                {"nGetChar", "!(Ljava/lang/Object;J)C", &nGetChar__Ljava_lang_Object_2J},
+                {"nGetChar", "!(J)C", &nGetChar__J},
+                {"nPutChar", "!(Ljava/lang/Object;JC)V", &nPutChar__Ljava_lang_Object_2JC},
+                {"nPutChar", "!(JC)V", &nPutChar__JC},
+                {"nGetInt", "!(J)I", &nGetInt},
+                {"nPutInt", "!(JI)V", &nPutInt},
+                {"nGetLong", "!(J)J", &nGetLong},
+                {"nPutLong", "!(JJ)V", &nPutLong},
+                {"nGetFloat", "!(Ljava/lang/Object;J)F", &nGetFloat__Ljava_lang_Object_2J},
+                {"nGetFloat", "!(J)F", &nGetFloat__J},
+                {"nPutFloat", "!(Ljava/lang/Object;JF)V", &nPutFloat__Ljava_lang_Object_2JF},
+                {"nPutFloat", "!(JF)V", &nPutFloat__JF},
+                {"nGetDouble", "!(Ljava/lang/Object;J)D", &nGetDouble__Ljava_lang_Object_2J},
+                {"nGetDouble", "!(J)D", &nGetDouble__J},
+                {"nPutDouble", "!(Ljava/lang/Object;JD)V", &nPutDouble__Ljava_lang_Object_2JD},
+                {"nPutDouble", "!(JD)V", &nPutDouble__JD},
+                {"nCopyMemory", "(JJJ)V", &nCopyMemory},
+                {"nLoadFence", "!()V", &nLoadFence},
+                {"nStoreFence", "!()V", &nStoreFence},
+                {"nFullFence", "!()V", &nFullFence}
+        };
+        if ((*env)->RegisterNatives(env, clazz, methods, sizeof(methods) / sizeof(methods[0])) != JNI_OK) return JNI_ERR;
+    }
+    else {
+        JNINativeMethod methods[] = {
+                {"nAllocateMemory", "(J)J", &nAllocateMemory},
+                {"nFreeMemory", "(J)V", &nFreeMemory}
+        };
+        if ((*env)->RegisterNatives(env, clazz, methods, sizeof(methods) / sizeof(methods[0])) != JNI_OK) return JNI_ERR;
+    }
     nAddressOf_methodID = (*env)->GetStaticMethodID(env, clazz, "nAddressOf", "(Ljava/lang/Object;)J");
     if (nAddressOf_methodID == NULL) return JNI_ERR;
     return JNI_VERSION_1_6;
@@ -277,7 +286,3 @@ nAddressOf(JNIEnv *env, jclass clazz, jobject obj) {
 #ifdef __cplusplus
 }
 #endif
-
-
-
-
