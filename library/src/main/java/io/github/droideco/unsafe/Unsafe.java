@@ -3,6 +3,8 @@ package io.github.droideco.unsafe;
 import android.os.Build;
 
 import java.lang.reflect.Field;
+import java.nio.Buffer;
+import java.nio.ByteBuffer;
 
 import dalvik.annotation.optimization.CriticalNative;
 import dalvik.annotation.optimization.FastNative;
@@ -349,51 +351,51 @@ public class Unsafe {
     private static native void nPutBoolean(Object obj, long offset, boolean newValue);
     @FastNative
     private static native byte nGetByte(Object obj, long offset);
-    @CriticalNative
+    @FastNative
     private static native byte nGetByte(long address);
     @FastNative
     private static native void nPutByte(Object obj, long offset, byte newValue);
-    @CriticalNative
+    @FastNative
     private static native void nPutByte(long address, byte newValue);
     @FastNative
     private static native short nGetShort(Object obj, long offset);
-    @CriticalNative
+    @FastNative
     private static native short nGetShort(long address);
     @FastNative
     private static native void nPutShort(Object obj, long offset, short newValue);
-    @CriticalNative
+    @FastNative
     private static native void nPutShort(long address, short newValue);
     @FastNative
     private static native char nGetChar(Object obj, long offset);
-    @CriticalNative
+    @FastNative
     private static native char nGetChar(long address);
     @FastNative
     private static native void nPutChar(Object obj, long offset, char newValue);
-    @CriticalNative
+    @FastNative
     private static native void nPutChar(long address, char newValue);
-    @CriticalNative
+    @FastNative
     private static native int nGetInt(long address);
-    @CriticalNative
+    @FastNative
     private static native void nPutInt(long address, int newValue);
-    @CriticalNative
+    @FastNative
     private static native long nGetLong(long address);
-    @CriticalNative
+    @FastNative
     private static native void nPutLong(long address, long newValue);
     @FastNative
     private static native float nGetFloat(Object obj, long offset);
-    @CriticalNative
+    @FastNative
     private static native float nGetFloat(long address);
     @FastNative
     private static native void nPutFloat(Object obj, long offset, float newValue);
-    @CriticalNative
+    @FastNative
     private static native void nPutFloat(long address, float newValue);
     @FastNative
     private static native double nGetDouble(Object obj, long offset);
-    @CriticalNative
+    @FastNative
     private static native double nGetDouble(long address);
     @FastNative
     private static native void nPutDouble(Object obj, long offset, double newValue);
-    @CriticalNative
+    @FastNative
     private static native void nPutDouble(long address, double newValue);
     private static native void nCopyMemory(long srcAddr, long dstAddr, long bytes);
     @CriticalNative
@@ -402,6 +404,8 @@ public class Unsafe {
     private static native void nStoreFence();
     @CriticalNative
     private static native void nFullFence();
+    private static native long nGetDirectBufferAddress(Buffer buffer);
+    private static native ByteBuffer nWrapDirectByteBuffer(long address, long capacity);
 
     /**
      * Allocates an instance of the given class without running the constructor.
@@ -691,7 +695,6 @@ public class Unsafe {
         }
         REFERENCE_SIZE = _referenceSize;
     }
-    
 
     private interface Int64Adapter {
         long get(Object obj, long offset);
@@ -734,8 +737,8 @@ public class Unsafe {
                 UNSAFE.putLong(address, newValue);
             }
         };
-        Int64Adapter ADDRESS = ADDRESS_SIZE == 8L ? Int64Adapter.SIZE64 : Int64Adapter.SIZE32;
-        Int64Adapter REFERENCE = REFERENCE_SIZE == 8L ? Int64Adapter.SIZE64 : Int64Adapter.SIZE32;
+        Int64Adapter ADDRESS = ADDRESS_SIZE == 8L ? SIZE64 : SIZE32;
+        Int64Adapter REFERENCE = REFERENCE_SIZE == 8L ? SIZE64 : SIZE32;
     }
 
     private static final ThreadLocal<Object[]> BUFFER = new ThreadLocal<>() {
@@ -773,6 +776,15 @@ public class Unsafe {
 
     public void putAddress(long address, long newValue) {
         Int64Adapter.ADDRESS.put(address, newValue);
+    }
+
+    public long getDirectBufferAddress(Buffer buffer) {
+        return buffer == null ? 0L : (buffer.isDirect() ? nGetDirectBufferAddress(buffer) : 0L);
+    }
+
+    public ByteBuffer wrapDirectByteBuffer(long address, int capacity) {
+        if (capacity < 0) throw new IllegalArgumentException("Negative capacity");
+        return nWrapDirectByteBuffer(address, capacity);
     }
 
     private static final class SDK24 extends Unsafe {
